@@ -1,74 +1,33 @@
-# Notações do Spring Boot e JPA
+# Notações do Spring Boot e JPA - Referência Rápida
 
-Este documento explica as principais anotações utilizadas no Projeto Financeiro para facilitar o desenvolvimento e a integração com o banco de dados.
+Documentação das anotações essenciais utilizadas no projeto para mapeamento, validação e controle.
 
-## Anotações Core do Spring
+## Spring Framework & REST
+- `@RestController`: Define a classe como um recurso REST.
+- `@RequestMapping("/caminho")`: Define a rota base do controller.
+- `@Autowired`: Injeção de dependência (Service no Controller, Repository no Service).
+- `@Service`: Identifica a camada de lógica de negócio.
+- `@Repository`: Identifica a camada de acesso a dados.
+- `@RestControllerAdvice`: Componente global para tratamento de exceções.
+- `@ExceptionHandler`: Define o tratamento para uma exceção específica.
 
-### `@RestController`
-Indica que a classe é um controlador REST, onde os métodos retornam dados diretamente no corpo da resposta (geralmente JSON). Combina `@Controller` e `@ResponseBody`.
+## JPA & Hibernate (Banco de Dados)
+- `@Entity`: Mapeia a classe para uma tabela.
+- `@Table(name = "...")`: Especifica o nome da tabela.
+- `@Id` & `@GeneratedValue`: Define a chave primária e sua estratégia de geração (Auto-incremento).
+- `@Embedded` & `@Embeddable`: Para classes que são "partes" de uma tabela (ex: Endereco dentro de Pessoa).
+- `@ManyToOne` & `@JoinColumn`: Mapeia relacionamentos N:1 (Chave Estrangeira).
+- `@Enumerated(EnumType.STRING)`: Salva o texto do Enum no banco em vez do número.
+- `@Transactional`: Garante que a operação seja atômica (tudo ou nada).
 
-### `@RequestMapping("/url")`
-Define a URL base para todos os endpoints dentro de uma classe Controller.
+## Validação (Bean Validation)
+- `@Valid`: Ativa a validação no parâmetro do Controller.
+- `@NotBlank`: String não pode ser vazia ou só espaços.
+- `@NotNull`: Campo não pode ser nulo (obrigatório).
+- `@Size(min, max)`: Define limites de caracteres.
 
-### `@Autowired`
-Habilita a injeção de dependência automática. O Spring encontra o componente correspondente e o injeta na classe.
-
-### `@Service`
-Marca uma classe como pertencente à camada de serviço (lógica de negócio).
-
-### `@Repository`
-Indica que a classe é um componente de acesso a dados (camada de persistência).
-
-## Anotações JPA (Persistência)
-
-### `@Entity`
-Define que a classe é uma entidade mapeada para uma tabela no banco de dados.
-
-### `@Table(name = "nome_tabela")`
-Especifica o nome da tabela no banco de dados que a entidade representa.
-
-### `@Id`
-Marca o atributo como a chave primária (Primary Key) da entidade.
-
-### `@GeneratedValue(strategy = GenerationType.IDENTITY)`
-Indica que a chave primária será gerada automaticamente pelo banco de dados (ex: Auto-increment).
-
-### `@ManyToOne`
-Define um relacionamento de muitos para um (N:1) entre a entidade atual e outra.
-
-### `@JoinColumn(name = "coluna_fk")`
-Especifica o nome da coluna de chave estrangeira (Foreign Key) na tabela.
-
-### `@Enumerated(EnumType.STRING)`
-Persiste o nome do valor do Enum como uma String no banco de dados, em vez de seu índice numérico.
-
-### `@Embeddable`
-Marca uma classe cujas instâncias são armazenadas como parte de uma entidade proprietária.
-
-### `@Embedded`
-Marca um atributo em uma entidade como sendo um objeto embutido (de uma classe `@Embeddable`).
-
-## Anotações de Validação (Bean Validation)
-
-### `@Valid`
-Ativa a validação automática do objeto enviado no corpo da requisição com base nas anotações de validação nos campos do DTO.
-
-### `@NotBlank`
-Valida se o campo String não é nulo e não possui apenas espaços em branco.
-
-### `@NotNull`
-Valida se o campo não é nulo.
-
-### `@FutureOrPresent`
-Garante que a data informada seja a data atual ou uma data futura.
-
-## Anotações de Requisição HTTP
-
-### `@PostMapping`, `@GetMapping`, `@PutMapping`, `@DeleteMapping`
-Mapeiam requisições HTTP para métodos específicos do controlador.
-
-### `@RequestBody`
-Indica que o objeto de entrada deve ser desserializado a partir do corpo (body) da requisição JSON.
-
-### `@PathVariable`
-Indica que um parâmetro do método será preenchido com um valor vindo de uma variável da URL.
+## Lombok (Produtividade)
+- `@Getter` / `@Setter`: Gera métodos de acesso.
+- `@NoArgsConstructor`: Gera construtor vazio (exigido pelo JPA).
+- `@AllArgsConstructor`: Gera construtor com todos os campos.
+- `@EqualsAndHashCode(of = "...")`: Gera métodos de comparação baseados em campos específicos.
