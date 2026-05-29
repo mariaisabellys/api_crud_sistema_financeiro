@@ -1,47 +1,44 @@
 # Especificação do Projeto Financeiro (Spec)
 
-Este documento detalha os requisitos, casos de uso e critérios de sucesso para o Sistema de Controle Financeiro.
+Este documento detalha os requisitos técnicos e funcionais para o Sistema de Controle Financeiro, alinhado aos padrões RESTful.
 
 ## 📌 Requisitos Funcionais (RF)
 
 - **RF01: Gerenciamento de Categorias**
-  - O sistema deve permitir o cadastro de categorias de lançamentos.
+  - Cadastro, consulta e exclusão de categorias.
 - **RF02: Gerenciamento de Pessoas**
-  - O sistema deve permitir o cadastro de pessoas com seus respectivos endereços.
-  - O sistema deve permitir ativar/desativar pessoas.
+  - Cadastro completo com endereço.
+  - Exclusão lógica (inativação) para preservar o histórico de lançamentos.
 - **RF03: Gerenciamento de Lançamentos**
-  - O sistema deve permitir o registro de receitas e despesas.
-  - Cada lançamento deve estar obrigatoriamente vinculado a uma categoria e a uma pessoa ativa.
-- **RF04: Listagem e Paginação**
-  - O sistema deve retornar listas paginadas para lançamentos e pessoas.
-- **RF05: Atualização e Remoção**
-  - O sistema deve permitir a atualização de dados cadastrais.
-  - O sistema deve permitir a exclusão de registros.
+  - Registro de receitas e despesas vinculadas a categorias e pessoas.
+  - Validação rigorosa: pessoa deve estar ativa.
+- **RF04: Consultas Paginadas**
+  - Listagem de lançamentos e pessoas deve suportar paginação e ordenação via URL.
 
-## 🛠 Casos de Uso (UC)
+## 🛠 Requisitos Técnicos e Padrões
 
-- **UC01: Registrar uma Despesa**
-  - O usuário informa a descrição, data de vencimento, valor, tipo (DESPESA), categoria e a pessoa responsável.
-  - O sistema valida se a pessoa informada existe e está ativa.
-  - O sistema persiste a despesa no banco de dados.
-- **UC02: Consultar Lançamentos com Paginação**
-  - O usuário solicita a lista de lançamentos com parâmetros de página e tamanho.
-  - O sistema retorna uma página de resultados contendo os dados essenciais dos lançamentos.
-- **UC03: Desativar uma Pessoa**
-  - O usuário solicita a inativação de uma pessoa pelo código.
-  - O sistema altera o campo `ativo` para `false`.
+- **Padrão de Respostas HTTP:**
+  - `201 Created`: Para cadastros bem-sucedidos, retornando a URI no cabeçalho `Location`.
+  - `200 OK`: Para consultas e atualizações.
+  - `204 No Content`: Para exclusões.
+  - `404 Not Found`: Quando um ID informado não existe.
+  - `400 Bad Request`: Para erros de validação de dados ou regras de negócio.
+- **Segurança e Abstração:**
+  - Uso obrigatório de **Records (DTOs)** para entrada e saída de dados.
+  - Entidades JPA nunca devem ser expostas diretamente nos Controllers.
+- **Tratamento de Erros:**
+  - Centralizado em um `TratadorDeErros` global.
+  - Erros de validação (Bean Validation) devem retornar uma lista detalhada com campo e mensagem.
 
-## ⚠️ Casos de Borda (Edge Cases)
+## ⚠️ Regras de Negócio e Casos de Borda
 
-- **Pessoa Inativa:** Tentar realizar um lançamento para uma pessoa que existe mas está com o status `ativo = false`. O sistema deve retornar um erro de regra de negócio.
-- **Data Retroativa:** Tentar cadastrar um lançamento com data de vencimento no passado (dependendo da regra de negócio, pode ser permitido ou bloqueado por `@FutureOrPresent`).
-- **Valor Negativo:** Tentar cadastrar um lançamento com valor menor ou igual a zero. O sistema deve validar via `@Positive`.
-- **Categoria Inexistente:** Tentar vincular um lançamento a um código de categoria que não consta na base de dados.
+- **Validação de Pessoa:** Um lançamento só pode ser salvo se o `codigoPessoa` referenciar uma pessoa existente e com `ativo = true`.
+- **Integridade de Dados:** O sistema deve utilizar `@Transactional` em operações de escrita nos Services.
+- **Campos Obrigatórios:** Validados via `@NotBlank`, `@NotNull`, `@Positive`, etc.
 
-## ✅ Critérios de Sucesso
+## ✅ Critérios de Aceite
 
-- O sistema persiste corretamente os dados no banco de dados MySQL via JPA.
-- Todas as APIs retornam códigos de status HTTP apropriados (201 para criação, 200 para sucesso, 404 para não encontrado, 400 para erro de validação).
-- As validações de Bean Validation bloqueiam entradas de dados inconsistentes antes de chegarem à camada de persistência.
-- O mapeamento objeto-relacional reflete fielmente o diagrama de classes proposto.
-- O histórico de alterações do banco de dados é gerenciado corretamente via Flyway Migrations.
+- API segue os níveis de maturidade REST (uso correto de verbos e status).
+- Código limpo e organizado em camadas (Controller -> Service -> Repository).
+- Banco de dados gerenciado via Flyway.
+- Feedback de erro claro e padronizado para o cliente da API.

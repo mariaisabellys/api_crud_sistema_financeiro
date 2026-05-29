@@ -14,6 +14,18 @@ Acesse os documentos detalhados abaixo para entender a arquitetura, o modelo de 
 6.  **[Anotações do Spring](SPRING_ANNOTATIONS.md)**: Guia de referência das tecnologias utilizadas.
 7.  **[Especificação (Spec)](SPEC.md)**: Requisitos funcionais, casos de uso e critérios de sucesso.
 8.  **[Plano de Projeto (Plan)](PLAN.md)**: Roadmap de desenvolvimento e tarefas.
+9.  **[Guia de Implementação CRUD](GUIA_IMPLEMENTACAO_CRUD.md)**: Passo a passo técnico para o desenvolvimento.
+10. **[Referência de Código](codigo.md)**: Blocos de código prontos para implementação.
+11. **[Guia de Testes Insomnia](GUIA_TESTES_INSOMNIA.md)**: Como validar a aplicação após o desenvolvimento.
+
+## 🚀 Evolução do Projeto
+
+Este projeto passou por uma análise comparativa profunda com sistemas de referência para adotar padrões de maturidade REST, incluindo:
+- **Tratamento Global de Erros** (`RestControllerAdvice`).
+- **Paginação e Ordenação** nativas.
+- **DTOs Especializados** (Java Records).
+- **Exclusão Lógica** (Soft Delete) para preservação de dados.
+- **Maturidade REST** (Uso correto de status codes e cabeçalhos).
 
 ## 🛠️ Tecnologias Utilizadas
 
